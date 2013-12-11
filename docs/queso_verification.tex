@@ -1,0 +1,165 @@
+\documentclass[11pt, oneside]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
+\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
+%\geometry{landscape}                		% Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
+								% TeX will automatically convert eps --> pdf in pdflatex		
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+\def\ds{\displaystyle}
+\def\d{\partial}
+\def\hQ{{\Phi}}
+\def\tq{q}
+\def\y{\upsilon}
+\def\reals{\mathbb{R}}
+
+
+\title{A Proposed QUESO Algebraic Verification Problem}
+%\author{The Author}
+%\date{}							% Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+%\section{}
+%\subsection{}
+
+\section{Theoretical Background}
+Let $\epsilon_t$ denote a mean-zero Gaussian stochastic process having covariance function $C(t_1, t_2 | \mathbf{\phi}) = (1/\lambda) R(t_1, t_2 | \mathbf{\phi})$, where $\lambda > 0$ and $R(\cdot, \cdot | \mathbf{\phi})$ is a correlation function for $\mathbf{\phi} \in \Phi$.  We assume the following quantities are specified:
+\begin{enumerate}
+\item Nominal parameter settings $(\mathbf{\beta}_0, \lambda_0, \mathbf{\phi}_0)$ with $\mathbf{\beta}_0 \in \mathcal{R}^p$, $\lambda_0 > 0$, and $\mathbf{\phi}_0 \in \mbox{int}(\Phi)$
+\item Indices $\{ t_1, t_2, \ldots, t_n \}$.
+\end{enumerate} 
+For specified $n$, generate a $n$-vector of errors
+\[
+(\epsilon_{t_1}, \ldots, \epsilon_{t_n}) \sim \mathcal{N} \left(\mathbf{0}_n, (1/\lambda_0) \mathbf{R}_n (\mathbf{\phi}_0) \right) \,,
+\]
+where the $(i,j)$ element of $\mathbf{R}_n (\mathbf{\phi}_0)$ is given by $R(t_i, t_j | \mathbf{\phi}_0)$.  To complete the data generation process, we sample $d$-dimensional covariates $\{ \mathbf{x}_1, \ldots \mathbf{x}_n \}$ independently from the distribution $\mathcal{N}( \mathbf{0}_d, \mathbf{C})$, where $\mathbf{C}$ is a fixed covariance matrix.  The $i$-th datum is calculated as $y_{t_i} = \mathbf{f}^T(\mathbf{x}_i) \mathbf{\beta}_0 + \epsilon_{t_i}$, where $\mathbf{f}(\cdot)$ is a $p$-dimensional regression function.  In vector-matrix form,
+\[
+\mathbf{y}_n = \mathbf{X}_n \mathbf{\beta}_0 + \mathbf{\epsilon}_n \,,
+\]
+where
+\begin{align*}
+\mathbf{y}_n &= (y_{t_1}, y_{t_2}, \ldots, y_{t_n})^T \,, \\
+\mathbf{X}_n &= [ \, \mathbf{f}(\mathbf{x}_1) ~ \mathbf{f}(\mathbf{x}_2) ~ \cdots ~ \mathbf{f}(\mathbf{x}_n) \, ]^T \,,\,\mbox{and} \\
+\mathbf{\epsilon}_n &= (\epsilon_{t_1}, \epsilon_{t_2}, \ldots, \epsilon_{t_n})^T \,.
+\end{align*}
+To generate $m$ additional responses, we sample:
+\begin{enumerate}
+\item $\{ \mathbf{x}_{n+1}, \ldots, \mathbf{x}_{n+m} \}$ independently from the distribution $\mathcal{N}( \mathbf{0}_d, \mathbf{C})$
+\item $(\epsilon_{t_{n+1}}, \ldots, \epsilon_{t_{n+m}})^T \sim \mathcal{N} \left( \mathbf{0}_m, (1/\lambda_0) \left(\mathbf{R}_m (\mathbf{\phi}_0) - \mathbf{R}_{m,n} (\mathbf{\phi}_0) \mathbf{R}_n^{-1} (\mathbf{\phi}_0) \mathbf{R}_{m,n}^T (\mathbf{\phi}_0) \right) \right)$ \,,
+\end{enumerate}
+where the $(i,j)$ element of $\mathbf{R}_m(\mathbf{\phi}_0)$ is given by $R(t_{n+i}, t_{n+j} | \mathbf{\phi}_0)$, and the $(i,j)$ element of $\mathbf{R}_{m,n} (\mathbf{\phi}_0)$ is given by $R(t_{n+i}, t_j | \mathbf{\phi}_0)$. Then $y_{t_{n+i}} = \mathbf{f}^T(\mathbf{x}_{n+i}) \mathbf{\beta}_0 + \epsilon_{t_{n+i}}$ and the matrix-vector form of the augmented data set follows.  Note that this process of conditionally sampling errors preserves the correct joint disribution of the augmented data vector.
+
+In the following calculations, we assume the regression matrix $\mathbf{X}_n$ is fixed, so this will not be explicitly denoted in the notation.  Although $(\mathbf{\beta}, \lambda, \mathbf{\phi})$ are fixed at $(\mathbf{\beta}_0, \lambda_0, \mathbf{\phi}_0)$ to generate data as above, our statistical analyses will assume some or all of $(\mathbf{\beta}_0, \lambda_0, \mathbf{\phi}_0)$ are unknown.  The sampling distribution (likelihood function) $\pi(\mathbf{y}_n | \beta, \lambda, \phi)$ based on a data set of size $n$ is $\mathcal{N} \left( \mathbf{X}_n \mathbf{\beta}, (1/\lambda) \mathbf{R}_n (\phi) \right)$.
+
+({\bf I}.)  The first analysis assumes that $\lambda$ and $\mathbf{\phi}$ are fixed at $\lambda_0$ and $\mathbf{\phi}_0$, respectively.  The Bayesian analysis places a prior distribution on $\mathbf{\beta}$, which is given by the following:
+\begin{enumerate}
+\item $\pi(\mathbf{\beta}) = \int_{\mathcal{R}^p} \pi(\mathbf{\beta} | \mathbf{\mu}) \, \pi(\mathbf{\mu}) \, d\mu$,
+\item $\pi(\mathbf{\beta} | \mathbf{\mu})$ is $\mathcal{N}( \mathbf{\mu}, \lambda_0^{-1} \mathbf{\Sigma}^{-1} )$, and
+\item $\pi(\mathbf{\mu})$ is $\mathcal{N}( \mathbf{\mu}_0, \lambda_0^{-1} \mathbf{\Sigma}_0^{-1} )$.
+\end{enumerate}
+These assumptions imply that the marginal prior $\pi(\mathbf{\beta})$ is $\mathcal{N} \left( \mathbf{\mu}_0, \lambda_0^{-1} \left( \mathbf{\Sigma}_0^{-1}+\mathbf{\Sigma}^{-1} \right) \right)$.  The posterior distribution of $\mathbf{\mu}$ is $\mathcal{N} \left( \mathbf{\mu}_1, \lambda_0^{-1} \mathbf{\Sigma}_1 \right)$, where
+\begin{align*}
+\mathbf{\Sigma}_1^{-1} &= \mathbf{\Sigma}_0 + \left( \mathbf{\Sigma}^{-1} + \left( \mathbf{X}_n^T \mathbf{R}_n^{-1} (\phi_0) \mathbf{X}_n \right)^{-1} \right)^{-1} \mbox{ and} \\[1ex]
+\mathbf{\mu}_1 & = \mathbf{\Sigma}_1 \left[ \left( \mathbf{\Sigma}^{-1} +\left(\mathbf{X}_n^T \mathbf{R}_n^{-1} (\phi_0) \mathbf{X}_n \right)^{-1} \right)^{-1} \hat{\mathbf{\beta}} + \mathbf{\Sigma}_0 \mathbf{\mu}_0 \right]
+\end{align*}
+for $\hat{\mathbf{\beta}} = \left( \mathbf{X}_n^T \mathbf{R}_n^{-1} (\phi_0) \mathbf{X}_n \right)^{-1} \mathbf{X}_n^T \mathbf{R}_n^{-1} (\phi_0) \mathbf{y}_n$.  The posterior distribution of $\mathbf{\beta}$ is $\mathcal{N} \left( \mathbf{\mu}_2, \lambda_0^{-1} \mathbf{\Sigma}_2 \right)$, where
+\begin{align*}
+\mathbf{\Sigma}_2^{-1} &= \left(\mathbf{\Sigma}_0^{-1} + \mathbf{\Sigma}^{-1}\right)^{-1} + \mathbf{X}_n^T \mathbf{R}_n^{-1} (\phi_0) \mathbf{X}_n \mbox{ and} \\[1ex]
+\mathbf{\mu}_2 & = \mathbf{\Sigma}_2 \left[ (\mathbf{X}_n^T \mathbf{R}_n^{-1} (\phi_0) \mathbf{X}_n) \hat{\mathbf{\beta}} + \left(\mathbf{\Sigma}_0^{-1} + \mathbf{\Sigma}^{-1} \right)^{-1} \mathbf{\mu}_0 \right] \,.
+\end{align*}
+
+A noninformative prior for $\mathbf{\beta}$, $\pi(\mathbf{\beta}) \propto 1$, takes $\mathbf{\Sigma}_0 = \mathbf{\Sigma} = \mathbf{0}$.
+
+The predictive distribution of $q$ future responses $\tilde{\mathbf{y}}_q = (y_{\tilde{t}_1}, y_{\tilde{t}_2},\ldots, y_{\tilde{t}_q})^T$ associated with regression matrix $\tilde{\mathbf{X}}_q = [\, \mathbf{f}(\tilde{\mathbf{x}}_1) ~ \mathbf{f}(\tilde{\mathbf{x}}_2) ~ \cdots ~ \mathbf{f}(\tilde{\mathbf{x}}_q)]^T$ and the $q$-variate error vector $\tilde{\mathbf{\epsilon}}_q=(\epsilon_{\tilde{t}_1}, \epsilon_{\tilde{t}_2}, \ldots, \epsilon_{\tilde{t}_q})^T$ is $\mathcal{N} \left( \tilde{\mathbf{\mu}}_q, \lambda_0^{-1} \tilde{\mathbf{\Sigma}}_q \right)$, where
+\begin{align*}
+\tilde{\mathbf{\mu}}_q &= \tilde{\mathbf{X}}_q \mathbf{\mu}_2 + \tilde{\mathbf{R}}_{q,n}(\mathbf{\phi}_0) \mathbf{R}_n^{-1}(\mathbf{\phi}_0) \left( \mathbf{y}_n - \mathbf{X}_n \mathbf{\mu}_2 \right) \mbox{ and} \\[1ex]
+\tilde{\mathbf{\Sigma}}_q &= \tilde{\mathbf{R}}_q(\mathbf{\phi}_0)-\tilde{\mathbf{R}}_{q,n}(\mathbf{\phi}_0) \mathbf{R}_n^{-1}(\mathbf{\phi}_0) \tilde{\mathbf{R}}_{q,n}^T(\mathbf{\phi}_0)+\tilde{\mathbf{H}}_q \mathbf{\Sigma}_2 \tilde{\mathbf{H}}_q^T
+\end{align*}
+for $\tilde{\mathbf{H}}_q = \tilde{\mathbf{X}}_q - \tilde{\mathbf{R}}_{q,n}(\mathbf{\phi}_0) \mathbf{R}_n^{-1}(\mathbf{\phi}_0) \mathbf{X}_n$.  Here, the $(i,j)$ element of $\tilde{\mathbf{R}}_q(\mathbf{\phi}_0)$ is given by $R(\tilde{t}_i, \tilde{t}_j | \mathbf{\phi}_0)$, and the $(i,j)$ element of $\tilde{\mathbf{R}}_{q,n}(\mathbf{\phi}_0)$ is given by $R(\tilde{t}_i, t_j | \mathbf{\phi}_0)$.
+
+({\bf II}.)  The second analysis assumes that $\phi$ is fixed at $\phi_0$.  The Bayesian analysis places a prior distribution on $(\mathbf{\beta}, \lambda)$, which is given by the following:
+\begin{enumerate}
+\item $\pi(\mathbf{\beta} | \lambda) = \int_{\mathcal{R}^p} \pi(\mathbf{\beta} | \mathbf{\mu}, \lambda) \, \pi(\mathbf{\mu} | \lambda) \, d\mu$,
+\item $\pi(\mathbf{\beta} | \mathbf{\mu}, \lambda)$ is $\mathcal{N}( \mathbf{\mu}, \lambda^{-1} \mathbf{\Sigma}^{-1} )$,
+\item $\pi(\mathbf{\mu} | \lambda)$ is $\mathcal{N}( \mathbf{\mu}_0, \lambda^{-1} \mathbf{\Sigma}_0^{-1} )$, and
+\item $\pi(\lambda)$ is Gamma$(a, b)$.
+\end{enumerate}
+These assumptions imply that the marginal prior $\pi(\mathbf{\beta} | \lambda)$ is $\mathcal{N} \left( \mathbf{\mu}_0, \lambda^{-1} \left( \mathbf{\Sigma}_0^{-1}+\mathbf{\Sigma}^{-1} \right) \right)$.  The posterior distribution of $\lambda$ is Gamma$(a_1, b_1)$, where
+\begin{align*}
+a_1 & = (2a+n)/2 \\
+b_1 &= \left(2b+(\mathbf{y}_n-\mathbf{X}_n \hat{\mathbf{\beta}})^T \mathbf{R}_n^{-1} (\phi_0) (\mathbf{y}_n - \mathbf{X}_n \hat{\mathbf{\beta}})+ (\hat{\mathbf{\beta}}-\mathbf{\mu}_0)^T \mathbf{\Sigma}_3^{-1} (\hat{\mathbf{\beta}}-\mathbf{\mu}_0) \right)/2
+\end{align*}
+for $\mathbf{\Sigma}_3 = \mathbf{\Sigma}_0^{-1}+\mathbf{\Sigma}^{-1}+\left(\mathbf{X}_n^T \mathbf{R}_n^{-1} (\phi_0) \mathbf{X}_n \right)^{-1}$.
+
+A noninformative prior for $\mathbf{\beta}$, $\pi(\mathbf{\beta}) \propto 1$, takes $\mathbf{\Sigma}_0 = \mathbf{\Sigma} = \mathbf{0}$.  In this case, we must replace $n$ by $n-p$ in $a_1$.  A noninformative prior for $\lambda$, $\pi(\lambda) \propto (1/\lambda)$, results from taking $a = b = 0$.  Note that $\pi(\mathbf{\beta}, \lambda) \propto (1/\lambda)$ is the Jeffreys noninformative prior.
+
+We denote the $d$-variate $t$ distribution having $\nu$ degrees of freedom, location vector $\mathbf{\mu}$, and scale matrix $\mathbf{\Sigma}$ by $\mathcal{T}_d (\nu, \mathbf{\mu}, \mathbf{\Sigma})$.  The mean of this distribution is $\mathbf{\mu}$ if $\nu > 1$ and the covariance matrix of this distribution is $\nu \mathbf{\Sigma} / (\nu -2)$ if $\nu > 2$.  The posterior distributions of $\mathbf{\mu}$ and $\mathbf{\beta}$ are given by
+\begin{align*}
+\pi( \mathbf{\mu} | \mathbf{y}_n ) \mbox{ is } & \mathcal{T}_p \left( 2 a_1, \mathbf{\mu}_1, b_1 \mathbf{\Sigma}_1 / a_1 \right) \\[1ex]
+\pi( \mathbf{\beta} | \mathbf{y}_n ) \mbox{ is } & \mathcal{T}_p \left( 2 a_1, \mathbf{\mu}_2, b_1 \mathbf{\Sigma}_2 / a_1 \right) \,.
+\end{align*}
+
+The predictive distribution of $\tilde{\mathbf{y}}_q$ is given by
+\[
+\pi( \tilde{\mathbf{y}}_q | \mathbf{y}_n ) \mbox{ is } \mathcal{T}_q \left( 2 a_1, \tilde{\mathbf{\mu}}_q, b_1 \tilde{\mathbf{\Sigma}}_q / a_1 \right) \,.
+\] 
+
+({\bf III}.)  The third analysis allows $\mathbf{\phi}$ to be random.  The Bayesian analysis places a prior distribution on $(\mathbf{\beta}, \lambda, \mathbf{\phi})$, which is given by $\pi(\mathbf{\beta}, \lambda, \mathbf{\phi}) = \pi(\mathbf{\beta}, \lambda) \pi(\mathbf{\phi})$ where $\pi(\mathbf{\beta}, \lambda)$ is specified in the previous analysis.  We will not presently specify $\pi(\mathbf{\phi})$.  Our goal in this analysis is to numerically approximate the marginal posterior distributions of $\lambda$, $\mathbf{\mu}$, and $\mathbf{\beta}$:
+\begin{align*}
+\pi(\lambda | \mathbf{y}_n ) & = \int_\mathbf{\Phi} \pi(\lambda | \mathbf{y}_n, \mathbf{\phi}) \, \pi(\mathbf{\phi} | \mathbf{y}_n) \, d\mathbf{\phi} \\[1ex]
+\pi(\mathbf{\mu} | \mathbf{y}_n ) & = \int_\mathbf{\Phi} \pi(\mathbf{\mu} | \mathbf{y}_n, \mathbf{\phi}) \, \pi(\mathbf{\phi} | \mathbf{y}_n) \, d\mathbf{\phi} \\[1ex]
+\pi(\mathbf{\beta} | \mathbf{y}_n ) & = \int_\mathbf{\Phi} \pi(\mathbf{\beta} | \mathbf{y}_n, \mathbf{\phi}) \, \pi(\mathbf{\phi} | \mathbf{y}_n) \, d\mathbf{\phi} \,.
+\end{align*}
+The distributions $\pi(\lambda | \mathbf{y}_n, \mathbf{\phi})$, $\pi(\mathbf{\mu} | \mathbf{y}_n, \mathbf{\phi})$, and $\pi(\mathbf{\beta} | \mathbf{y}_n, \mathbf{\phi})$ are given analytically in the previous analysis.  That leaves $\pi(\mathbf{\phi} | \mathbf{y}_n)$, which is given as follows:
+\[
+\pi(\mathbf{\phi} | \mathbf{y}_n) \propto \frac{\pi(\mathbf{\phi})}{b_1^{a_1} \,\mbox{det}(\mathbf{R}_n(\phi))^{1/2} \, \mbox{det}(\mathbf{X}_n^T \mathbf{R}_n^{-1}(\phi) \mathbf{X}_n)^{1/2} \, \mbox{det}(\mathbf{\Sigma}_3)^{1/2}} \,.
+\]
+Quadrature is used to compute the normalizing constant
+\[
+c(\mathbf{y}_n) = \int_{\Phi} \frac{\pi(\mathbf{\phi}) \, d \mathbf{\phi}}{b_1^{a_1} \,\mbox{det}(\mathbf{R}_n(\phi))^{1/2} \, \mbox{det}(\mathbf{X}_n^T \mathbf{R}_n^{-1}(\phi) \mathbf{X}_n)^{1/2} \, \mbox{det}(\mathbf{\Sigma}_3)^{1/2}}
+\]
+so that
+\[
+\pi(\mathbf{\phi} | \mathbf{y}_n) = \frac{c(\mathbf{y}_n)^{-1} \, \pi(\mathbf{\phi})}{b_1^{a_1} \,\mbox{det}(\mathbf{R}_n(\phi))^{1/2} \, \mbox{det}(\mathbf{X}_n^T \mathbf{R}_n^{-1}(\phi) \mathbf{X}_n)^{1/2} \, \mbox{det}(\mathbf{\Sigma}_3)^{1/2}} \,.
+\]
+
+The predictive distribution of $\tilde{\mathbf{y}}_q$ can also be numerically approximated:
+\[
+\pi(\tilde{\mathbf{y}}_q | \mathbf{y}_n) = \int_\mathbf{\Phi} \pi(\tilde{\mathbf{y}}_q | \mathbf{y}_n, \mathbf{\phi}) \, \pi(\mathbf{\phi} | \mathbf{y}_n) \, d\mathbf{\phi} \,.
+\]
+
+\section{Example Preliminaries}
+
+A simple linear regression model, $\mathbf{f}(\mathbf{x}) = (1,x_1,x_2,\ldots,x_d)^T$, is specified for all verification examples.  The dimension of $\mathbf{\beta}$ is therefore $p=d+1$.
+
+The verification examples proceed by considering successively more complex specifications of the correlation function $R(t_1, t_2 | \phi)$:
+\begin{enumerate}
+\item $R(t_i, t_j ) = \delta_{t_i, t_j}$
+\item $R(t_i, t_j | \phi) = \delta_{t_i, t_j}+\phi(1-\delta_{t_i,t_j}), \, \phi \in [0,1)$
+\item $R(t_i,t_j | \phi) = \phi^{|i-j|}, \, -1 < \phi < 1$
+\item $R(t_i,t_j | \mathbf{\phi}) = \exp \left[ -(\mathbf{x}_i - \mathbf{x}_j)^T \mathbf{D}_\mathbf{\phi} (\mathbf{x}_i - \mathbf{x}_j) \right]$, where $\mathbf{D}_\mathbf{\phi} = \mbox{ diag}(\phi_1, \ldots, \phi_d)$ and $\phi_i \ge 0$ for $i=1,\ldots, d$.
+\end{enumerate}
+The first case describes the standard regression setting in which errors are uncorrelated.  The second case describes eqicorrelated errors, for which all pairwise correlations are equal.  The third case describes an AR(1) correlation structure for errors associated with observations indexed by time.  The pairwise correlation between errors decays as a function of separation in time.  The final case specifies a Gaussian correlation for errors associated with observations indexed by covariates.  The pairwise correlation between errors decays as   a function of weighted distance between the covariate vectors associated with the corresponding observations.
+
+The first three correlation functions admit explicit expressions for the inverse $\mathbf{R}_n^{-1}(\mathbf{\phi})$ and determinant $\mbox{det} \left( \mathbf{R}_n(\mathbf{\phi}) \right)$:
+\begin{enumerate}
+\item $\mathbf{I}_n$ and 1
+\item $ \frac{1}{1-\phi} \left[ \mathbf{I}_n - \frac{\phi}{1+(n-1)\phi} \mathbf{J}_n \right]$ and $(1-\phi)^{n-1}(1+(n-1)\phi)$
+\item $\frac{1}{1-\phi^2} \left(
+\begin{array}{ccccccc}
+1 & -\phi & 0 & 0 & \cdots & 0 & 0\\
+-\phi & 1+\phi^2 & -\phi & 0 & \cdots & 0 & 0\\
+0 & -\phi & 1+\phi^2 & -\phi & \cdots & 0 & 0\\
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
+0 & 0 & 0 & 0 & \cdots & 1+\phi^2 & -\phi \\
+0 & 0 & 0 & 0 & \cdots & -\phi & 1
+\end{array} \right)$ and $(1-\phi^2)^{n-1}$
+\end{enumerate}
+
+We consider $n=10$ and $\log_{10}(n+m) \in \{ 2,3,4,5,6 \}$.  For the fourth correlation function, inverse and determinant calculcations will limit $\log_{10}(n+m)$ to $\{ 2,3 \}$.
+
+
+\end{document}  

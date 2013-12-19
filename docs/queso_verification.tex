@@ -125,9 +125,9 @@ The predictive distribution of $\tilde{\mathbf{y}}_q$ is given by
 \end{align*}
 The distributions $\pi(\lambda | \mathbf{y}_n, \mathbf{\phi})$, $\pi(\mathbf{\mu} | \mathbf{y}_n, \mathbf{\phi})$, and $\pi(\mathbf{\beta} | \mathbf{y}_n, \mathbf{\phi})$ are given analytically in the previous analysis.  That leaves $\pi(\mathbf{\phi} | \mathbf{y}_n)$, which is given as follows:
 \[
-\pi(\mathbf{\phi} | \mathbf{y}_n) \propto \frac{\pi(\mathbf{\phi})}{b_1^{a_1} \,\mbox{det}(\mathbf{R}_n(\phi))^{1/2} \, \mbox{det}(\mathbf{X}_n^T \mathbf{R}_n^{-1}(\phi) \mathbf{X}_n)^{1/2} \, \mbox{det}(\mathbf{\Sigma}_3)^{1/2}} \,.
+\pi(\mathbf{\phi} | \mathbf{y}_n) \propto \frac{\pi(\mathbf{\phi})}{b_1^{a_1} \,\mbox{det}(\mathbf{R}_n(\phi))^{1/2} \, \mbox{det}(\mathbf{X}_n^T \mathbf{R}_n^{-1}(\phi) \mathbf{X}_n)^{1/2} \, \mbox{det}(\mathbf{\Sigma}_3)^{1/2}} \,,
 \]
-Quadrature is used to compute the normalizing constant
+where $\phi$ replaces $\phi_0$ in $b_1$.  Quadrature is used to compute the normalizing constant
 \[
 c(\mathbf{y}_n) = \int_{\Phi} \frac{\pi(\mathbf{\phi}) \, d \mathbf{\phi}}{b_1^{a_1} \,\mbox{det}(\mathbf{R}_n(\phi))^{1/2} \, \mbox{det}(\mathbf{X}_n^T \mathbf{R}_n^{-1}(\phi) \mathbf{X}_n)^{1/2} \, \mbox{det}(\mathbf{\Sigma}_3)^{1/2}}
 \]

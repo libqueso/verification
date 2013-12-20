@@ -71,7 +71,11 @@ for $\hat{\mathbf{\beta}} = \left( \mathbf{X}_n^T \mathbf{R}_n^{-1} (\phi_0) \ma
 \mathbf{\mu}_2 & = \mathbf{\Sigma}_2 \left[ (\mathbf{X}_n^T \mathbf{R}_n^{-1} (\phi_0) \mathbf{X}_n) \hat{\mathbf{\beta}} + \left(\mathbf{\Sigma}_0^{-1} + \mathbf{\Sigma}^{-1} \right)^{-1} \mathbf{\mu}_0 \right] \,.
 \end{align*}
 
-A noninformative prior for $\mathbf{\beta}$, $\pi(\mathbf{\beta}) \propto 1$, takes $\mathbf{\Sigma}_0 = \mathbf{\Sigma} = \mathbf{0}$.
+A noninformative prior for $\mathbf{\beta}$, $\pi(\mathbf{\beta}) \propto 1$, results in an improper posterior distribution of $\mu$.  Note that assuming a noninformative prior for $\mathbf{\mu}$, $\pi(\mathbf{\mu}) \propto 1$, implies $\pi(\mathbf{\beta}) \propto 1$.  The posterior distribution of $\mathbf{\beta}$ is as above, with
+\begin{equation}
+\mathbf{\mu}_2 = \hat{\mathbf{\beta}} \mbox{ and } \mathbf{\Sigma}_2 = \left( \mathbf{X}_n^T \mathbf{R}_n^{-1} (\phi_0) \mathbf{X}_n \right)^{-1} \,.
+\label{eq1}
+\end{equation}
 
 The predictive distribution of $q$ future responses $\tilde{\mathbf{y}}_q = (y_{\tilde{t}_1}, y_{\tilde{t}_2},\ldots, y_{\tilde{t}_q})^T$ associated with regression matrix $\tilde{\mathbf{X}}_q = [\, \mathbf{f}(\tilde{\mathbf{x}}_1) ~ \mathbf{f}(\tilde{\mathbf{x}}_2) ~ \cdots ~ \mathbf{f}(\tilde{\mathbf{x}}_q)]^T$ and the $q$-variate error vector $\tilde{\mathbf{\epsilon}}_q=(\epsilon_{\tilde{t}_1}, \epsilon_{\tilde{t}_2}, \ldots, \epsilon_{\tilde{t}_q})^T$ is $\mathcal{N} \left( \tilde{\mathbf{\mu}}_q, \lambda_0^{-1} \tilde{\mathbf{\Sigma}}_q \right)$, where
 \begin{align*}
@@ -94,13 +98,19 @@ b_1 &= \left(2b+(\mathbf{y}_n-\mathbf{X}_n \hat{\mathbf{\beta}})^T \mathbf{R}_n^
 \end{align*}
 for $\mathbf{\Sigma}_3 = \mathbf{\Sigma}_0^{-1}+\mathbf{\Sigma}^{-1}+\left(\mathbf{X}_n^T \mathbf{R}_n^{-1} (\phi_0) \mathbf{X}_n \right)^{-1}$.
 
-A noninformative prior for $\mathbf{\beta}$, $\pi(\mathbf{\beta}) \propto 1$, takes $\mathbf{\Sigma}_0 = \mathbf{\Sigma} = \mathbf{0}$.  In this case, we must replace $n$ by $n-p$ in $a_1$.  A noninformative prior for $\lambda$, $\pi(\lambda) \propto (1/\lambda)$, results from taking $a = b = 0$.  Note that $\pi(\mathbf{\beta}, \lambda) \propto (1/\lambda)$ is the Jeffreys noninformative prior.
+A noninformative prior for $\mathbf{\beta}$, $\pi(\mathbf{\beta}) \propto 1$, results in the posterior distribution of $\lambda$ given above, with
+\begin{equation}
+a_1 = (2a+n-p)/2 \mbox{ and } b_1 = \left( 2b + (\mathbf{y}_n-\mathbf{X}_n \hat{\mathbf{\beta}})^T \mathbf{R}_n^{-1} (\phi_0) (\mathbf{y}_n - \mathbf{X}_n \hat{\mathbf{\beta}}) \right)/2 \,.
+\label{eq2}
+\end{equation}
+A noninformative prior for $\lambda$, $\pi(\lambda) \propto (1/\lambda)$, results from taking $a = b = 0$.  Note that $\pi(\mathbf{\beta}, \lambda) \propto (1/\lambda)$ is the Jeffreys noninformative prior.
 
 We denote the $d$-variate $t$ distribution having $\nu$ degrees of freedom, location vector $\mathbf{\mu}$, and scale matrix $\mathbf{\Sigma}$ by $\mathcal{T}_d (\nu, \mathbf{\mu}, \mathbf{\Sigma})$.  The mean of this distribution is $\mathbf{\mu}$ if $\nu > 1$ and the covariance matrix of this distribution is $\nu \mathbf{\Sigma} / (\nu -2)$ if $\nu > 2$.  The posterior distributions of $\mathbf{\mu}$ and $\mathbf{\beta}$ are given by
 \begin{align*}
 \pi( \mathbf{\mu} | \mathbf{y}_n ) \mbox{ is } & \mathcal{T}_p \left( 2 a_1, \mathbf{\mu}_1, b_1 \mathbf{\Sigma}_1 / a_1 \right) \\[1ex]
 \pi( \mathbf{\beta} | \mathbf{y}_n ) \mbox{ is } & \mathcal{T}_p \left( 2 a_1, \mathbf{\mu}_2, b_1 \mathbf{\Sigma}_2 / a_1 \right) \,.
 \end{align*}
+For the noninformative prior $\pi(\mathbf{\beta}) \propto 1$, as before the posterior distribution of $\mathbf{\mu}$ is improper.  The quantities $\mathbf{\mu}_2$, $\mathbf{\Sigma}_2$ from (\ref{eq1}) and $a_1$, $b_1$ from (\ref{eq2}) are utilized in the above expression for the posterior distribution of $\mathbf{\beta}$, where again $a = b = 0$ if $\pi(\lambda) \propto (1/\lambda)$.
 
 The predictive distribution of $\tilde{\mathbf{y}}_q$ is given by
 \[
@@ -115,9 +125,9 @@ The predictive distribution of $\tilde{\mathbf{y}}_q$ is given by
 \end{align*}
 The distributions $\pi(\lambda | \mathbf{y}_n, \mathbf{\phi})$, $\pi(\mathbf{\mu} | \mathbf{y}_n, \mathbf{\phi})$, and $\pi(\mathbf{\beta} | \mathbf{y}_n, \mathbf{\phi})$ are given analytically in the previous analysis.  That leaves $\pi(\mathbf{\phi} | \mathbf{y}_n)$, which is given as follows:
 \[
-\pi(\mathbf{\phi} | \mathbf{y}_n) \propto \frac{\pi(\mathbf{\phi})}{b_1^{a_1} \,\mbox{det}(\mathbf{R}_n(\phi))^{1/2} \, \mbox{det}(\mathbf{X}_n^T \mathbf{R}_n^{-1}(\phi) \mathbf{X}_n)^{1/2} \, \mbox{det}(\mathbf{\Sigma}_3)^{1/2}} \,.
+\pi(\mathbf{\phi} | \mathbf{y}_n) \propto \frac{\pi(\mathbf{\phi})}{b_1^{a_1} \,\mbox{det}(\mathbf{R}_n(\phi))^{1/2} \, \mbox{det}(\mathbf{X}_n^T \mathbf{R}_n^{-1}(\phi) \mathbf{X}_n)^{1/2} \, \mbox{det}(\mathbf{\Sigma}_3)^{1/2}} \,,
 \]
-Quadrature is used to compute the normalizing constant
+where $\phi$ replaces $\phi_0$ in $b_1$.  Quadrature is used to compute the normalizing constant
 \[
 c(\mathbf{y}_n) = \int_{\Phi} \frac{\pi(\mathbf{\phi}) \, d \mathbf{\phi}}{b_1^{a_1} \,\mbox{det}(\mathbf{R}_n(\phi))^{1/2} \, \mbox{det}(\mathbf{X}_n^T \mathbf{R}_n^{-1}(\phi) \mathbf{X}_n)^{1/2} \, \mbox{det}(\mathbf{\Sigma}_3)^{1/2}}
 \]
@@ -125,6 +135,16 @@ so that
 \[
 \pi(\mathbf{\phi} | \mathbf{y}_n) = \frac{c(\mathbf{y}_n)^{-1} \, \pi(\mathbf{\phi})}{b_1^{a_1} \,\mbox{det}(\mathbf{R}_n(\phi))^{1/2} \, \mbox{det}(\mathbf{X}_n^T \mathbf{R}_n^{-1}(\phi) \mathbf{X}_n)^{1/2} \, \mbox{det}(\mathbf{\Sigma}_3)^{1/2}} \,.
 \]
+
+For the noninformative prior $\pi(\mathbf{\beta}) \propto 1$,
+\[
+\pi(\mathbf{\phi} | \mathbf{y}_n) = \frac{c(\mathbf{y}_n)^{-1} \, \pi(\mathbf{\phi})}{b_1^{a_1} \,\mbox{det}(\mathbf{R}_n(\phi))^{1/2} \, \mbox{det}(\mathbf{X}_n^T \mathbf{R}_n^{-1}(\phi) \mathbf{X}_n)^{1/2}}
+\]
+for
+\[
+c(\mathbf{y}_n) = \int_{\Phi} \frac{\pi(\mathbf{\phi}) \, d \mathbf{\phi}}{b_1^{a_1} \,\mbox{det}(\mathbf{R}_n(\phi))^{1/2} \, \mbox{det}(\mathbf{X}_n^T \mathbf{R}_n^{-1}(\phi) \mathbf{X}_n)^{1/2}} \,,
+\]
+where $a_1$, $b_1$ are taken from (\ref{eq2}) and $a = b = 0$ if $\pi(\lambda) \propto (1/\lambda)$. 
 
 The predictive distribution of $\tilde{\mathbf{y}}_q$ can also be numerically approximated:
 \[
@@ -161,6 +181,9 @@ The first three correlation functions admit explicit expressions for the inverse
 
 For data sample sizes, we consider $\{ 1,2,3,10,100,1000,10^4,10^5,10^6\}$ for the first three correlation functions, and $\{ 1,2,3,10,100,1000\}$ for the fourth correlation function (sample size limited by inverse and determinant calculations).  Small sample sizes $\{ 1,2,3 \}$ will allow MCMC sampling from heavy-tailed posterior distributions to be compared with known analytical forms (specifically, the multivariate $t$ distributions of the second and third analyses).  Large sample sizes allow verification of regression parameter and error variance point estimate convergence ($\hat{\mathbf{\beta}} \rightarrow \mathbf{\beta}_0$ and $b_1/a_1 \rightarrow \lambda_0^{-1}$) for the first correlation function.  Each case will be structured so that the number of random parameters does not exceed the sample size.  For example, if $n=1$, only the first analysis is conducted with a single random regression parameter $\beta_0$.
 
-Two noninformative prior specifications will be considered:  (a) $\mathbf{\Sigma}_0 = \mathbf{\Sigma} = \mathbf{0}$ and (b) $\mathbf{\Sigma}_0 = \mathbf{0}$, $\mathbf{\Sigma} \ne \mathbf{0}$.  Both cases take $a = b = 0$.  Case (b) allows verification of the convergence $\mathbf{\Sigma}_1 \rightarrow \mathbf{\Sigma}^{-1}$ for the first correlation function.
-
+Two prior specifications will be considered:  (a) $\pi(\mathbf{\mu}, \mathbf{\beta}, \lambda) \propto (1/\lambda)$ (noninformative) and (b) $\mathbf{\Sigma}_0 = q \, \mathbf{I}_p$ for fixed $0 < q \ll 1$, and $\mathbf{\Sigma} = \mbox{diag}(\{ r_i, i=1,\ldots,p \})$ for fixed $r_i > 0$ (proper).  Both cases take $a = b = 0$.  For the first correlation function, case (b) allows verification of the convergence of the posterior distribution of $\mu$ to the Gaussian distribution having mean vector and covariance matrix
+\[
+\mathbf{\mu}_1 = \mathbf{D}_{\mathbf{\beta}} \mathbf{\beta}_0 + \mathbf{D}_{\mathbf{\mu}} \mathbf{\mu}_0 \mbox{ and } \lambda_0^{-1} \mathbf{\Sigma}_1 = \mbox{diag}( \{ \lambda_0^{-1}/(q+r_i), i=1,\ldots, p \})
+\]
+where $\mathbf{D}_{\mathbf{\beta}} = \mbox{diag}( \{ r_i/(q+r_i), i=1,\ldots, p \})$ and $\mathbf{D}_{\mathbf{\mu}} = \mbox{diag}( \{ q/(q+r_i), i=1,\ldots, p \})$.
 \end{document}  
